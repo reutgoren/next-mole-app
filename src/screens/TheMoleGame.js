@@ -44,6 +44,10 @@ const STATE = {
   WINCreator: 6,
   WINJoiner: 7,
 }
+
+//const SIXcategories = ['NBA','GENERAL KNOWLEDGE','MUSIC', 'POLITICS','CELEBRITY','FILMS'];
+const SIXcategories = ['NBA','General','Music', 'Politicians','Celeb','Movies'];
+
 let list = [];
 let listJoiner = [];
 let listCreator = [];
@@ -122,27 +126,53 @@ export default class GameBoard extends React.Component {
   GetItemsFromStorage = async () => {
     let key = await storageGet('key');
     let category = await storageGet('category');
+    // switch (category) {
+    //   case 'NBA':
+    //     categoryImage = images.nbaLogo;
+    //     break;
+    //   case 'FILMS':
+    //     categoryImage = images.filmLogo;
+    //     break;
+    //   case 'CELEBRITY':
+    //     categoryImage = images.celebrityLogo;
+
+    //     break;
+    //   case 'GENERAL KNOWLEDGE':
+    //     categoryImage = images.generalKnowledgeLogo;
+    //     break;
+    //   case 'MUSIC':
+    //     categoryImage = images.musicLogo;
+    //     break;
+    //   case 'POLITICS':
+    //     categoryImage = images.politicsLogo;
+    //     break;
+    //   case 'Game of thrones':
+    //     categoryImage = images.logo;
+    //     break;
+    //   default:
+    //     break;
+    // }
     switch (category) {
       case 'NBA':
         categoryImage = images.nbaLogo;
         break;
-      case 'FILMS':
+      case 'Movies':
         categoryImage = images.filmLogo;
         break;
-      case 'CELEBRITY':
+      case 'Celeb':
         categoryImage = images.celebrityLogo;
 
         break;
-      case 'GENERAL KNOWLEDGE':
+      case 'General':
         categoryImage = images.generalKnowledgeLogo;
         break;
-      case 'MUSIC':
+      case 'Music':
         categoryImage = images.musicLogo;
         break;
-      case 'POLITICS':
+      case 'Poiticians':
         categoryImage = images.politicsLogo;
         break;
-      case 'Game of thrones':
+      case 'Game_of_thrones':
         categoryImage = images.logo;
         break;
       default:
@@ -332,17 +362,18 @@ export default class GameBoard extends React.Component {
     listCreator = [];
     console.log('inside fetchListForcCreatorFromWiki')
     console.log('category: ',categoryPlayed)
-    if (categoryPlayed !== 'NBA' && categoryPlayed !== 'Movies' && categoryPlayed !== 'Celeb' && categoryPlayed !== 'General' && categoryPlayed !== 'Music' && categoryPlayed !== 'Politicians') {
+      if(!SIXcategories.includes(categoryPlayed)){
       this.state.creatorVerteciesToChooseFrom.map((item, key) => {
-        console.log(item)
         //let API = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + item + '&prop=pageimages&format=json&pithumbsize=800';
         let uri = 'http://proj.ruppin.ac.il/igroup8/prod/api/VertexGetInfo/?nodeName=' + item + '&categoryNAME=' + categoryPlayed;
         fetch(uri)
           .then(response => response.json())
           .then(data => {
-            console.log('data recive from server igroup8 after change card: ',data)
             //var pgid = Object.keys(data.query.pages)[0];
-            if (typeof data.NodeImageURL !== "undefined") {
+            console.log('fetchListForcCreatorFromWiki')
+            console.log('node URL ',data.NodeImageURL)
+            console.log(typeof data.NodeImageURL)
+            if (data.NodeImageURL != "") {
               let article = {
                 url: true,
                 title: item,
@@ -351,6 +382,8 @@ export default class GameBoard extends React.Component {
               listCreator.push(article);
             }
             else {
+              console.log('no image');
+              console.log('cat image ',categoryImage)
               let article = {
                 url: false,
                 title: item,
@@ -370,11 +403,13 @@ export default class GameBoard extends React.Component {
     else {
       //fetch creator vertecies to choose from
       this.state.creatorVerteciesToChooseFrom.map((item, key) => {
+        console.log('cat ', categoryPlayed)
         console.log('item' ,item)
         let API = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + item + '&prop=pageimages&format=json&pithumbsize=800';
         fetch(API)
           .then(response => response.json())
           .then(data => {
+            console.log('data from wiki ', data)
             var pgid = Object.keys(data.query.pages)[0];
             if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
               let article = {
@@ -436,7 +471,8 @@ export default class GameBoard extends React.Component {
   fetchListForJoinerFromWiki = () => {    //  362   joiner
     //get pics for each article
     listJoiner = [];
-    if (categoryPlayed !== 'NBA' && categoryPlayed !== 'Movies' && categoryPlayed !== 'Celeb' && categoryPlayed !== 'General' && categoryPlayed !== 'Music' && categoryPlayed !== 'Politicians') {
+    console.log('cat played ', categoryPlayed)
+    if(!SIXcategories.includes(categoryPlayed)){
       this.state.joinerVerteciesToChooseFrom.map((item, key) => {
         //let API = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + item + '&prop=pageimages&format=json&pithumbsize=800';
         let uri = 'http://proj.ruppin.ac.il/igroup8/prod/api/VertexGetInfo/?nodeName=' + item + '&categoryNAME=' + categoryPlayed;
@@ -444,7 +480,10 @@ export default class GameBoard extends React.Component {
           .then(response => response.json())
           .then(data => {
             //var pgid = Object.keys(data.query.pages)[0];
-            if (typeof data.NodeImageURL !== "undefined") {
+            console.log('fetchListForJoinerFromWiki')
+            console.log('node URL ',item, ' ', data.NodeImageURL)
+            console.log(typeof data.NodeImageURL)
+            if (data.NodeImageURL != "") {
               let article = {
                 url: true,
                 title: item,
@@ -453,6 +492,8 @@ export default class GameBoard extends React.Component {
               listJoiner.push(article);
             }
             else {
+              console.log('no image');
+              console.log('cat image ',categoryImage)
               let article = {
                 url: false,
                 title: item,
@@ -483,6 +524,7 @@ export default class GameBoard extends React.Component {
               listJoiner.push(article);
             }
             else {
+              console.log('cat image ', categoryImage)
               let article = {
                 url: false,
                 title: item,
@@ -535,42 +577,72 @@ export default class GameBoard extends React.Component {
     listJoiner = [];
     listCreator = [];
     //fetch joiner vertecies to choose from
+    console.log('line 580 ',this.state.joinerVerteciesToChooseFrom)
     this.state.joinerVerteciesToChooseFrom.map((item, key) => {
-      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + item + '&prop=pageimages&format=json&pithumbsize=800';
-      fetch(API)
-        .then(response => response.json())
-        .then(data => {
-          var pgid = Object.keys(data.query.pages)[0];
-          if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
-            let article = {
-              url: true,
-              title: item,
-              image: data.query.pages[pgid].thumbnail.source
+      if(!SIXcategories.includes(categoryPlayed)){
+        let uri = 'http://proj.ruppin.ac.il/igroup8/prod/api/VertexGetInfo/?nodeName=' + item + '&categoryNAME=' + categoryPlayed;
+        //let API = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + item + '&prop=pageimages&format=json&pithumbsize=800';
+        fetch(uri)
+          .then(response => response.json())
+          .then(data => {
+            //var pgid = Object.keys(data.query.pages)[0];
+            if (data.NodeImageURL !== "") {
+              let article = {
+                url: true,
+                title: item,
+                image: data.NodeImageURL
+              }
+              listJoiner.push(article);
             }
-            listJoiner.push(article);
-          }
-          else {
-            let article = {
-              url: false,
-              title: item,
-              image: categoryImage,
+            else {
+              let article = {
+                url: false,
+                title: item,
+                image: categoryImage,
+              }
+              listJoiner.push(article);
             }
-            listJoiner.push(article);
-          }
-        })
+          })
+      }
+      else{
+        let API = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + item + '&prop=pageimages&format=json&pithumbsize=800';
+        fetch(API)
+          .then(response => response.json())
+          .then(data => {
+            var pgid = Object.keys(data.query.pages)[0];
+            if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+              let article = {
+                url: true,
+                title: item,
+                image: data.query.pages[pgid].thumbnail.source
+              }
+              listJoiner.push(article);
+            }
+            else {
+              let article = {
+                url: false,
+                title: item,
+                image: categoryImage,
+              }
+              listJoiner.push(article);
+            }
+          })
+      }
+      
     })
     //fetch creator vertecies to choose from
     this.state.creatorVerteciesToChooseFrom.map((item, key) => {
-      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + item + '&prop=pageimages&format=json&pithumbsize=800';
-      fetch(API)
+      if(!SIXcategories.includes(categoryPlayed)){
+        let uri = 'http://proj.ruppin.ac.il/igroup8/prod/api/VertexGetInfo/?nodeName=' + item + '&categoryNAME=' + categoryPlayed;
+        fetch(uri)
         .then(response => response.json())
         .then(data => {
-          var pgid = Object.keys(data.query.pages)[0];
-          if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+          //var pgid = Object.keys(data.query.pages)[0];
+          if (data.NodeImageURL !== "") {
             let article = {
               url: true,
               title: item,
-              image: data.query.pages[pgid].thumbnail.source
+              image: data.NodeImageURL
             }
             listCreator.push(article);
           }
@@ -583,18 +655,46 @@ export default class GameBoard extends React.Component {
             listCreator.push(article);
           }
         })
+      }
+      else{
+        let API = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + item + '&prop=pageimages&format=json&pithumbsize=800';
+        fetch(API)
+          .then(response => response.json())
+          .then(data => {
+            var pgid = Object.keys(data.query.pages)[0];
+            if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+              let article = {
+                url: true,
+                title: item,
+                image: data.query.pages[pgid].thumbnail.source
+              }
+              listCreator.push(article);
+            }
+            else {
+              let article = {
+                url: false,
+                title: item,
+                image: categoryImage,
+              }
+              listCreator.push(article);
+            }
+          })
+      }
+      
     })
     //fetch creator target 
-    let API1 = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + game.CreatorPath.target + '&prop=pageimages&format=json&pithumbsize=800';
-    fetch(API1)
+    if(!SIXcategories.includes(categoryPlayed)){
+      let uri = 'http://proj.ruppin.ac.il/igroup8/prod/api/VertexGetInfo/?nodeName=' + game.CreatorPath.target + '&categoryNAME=' + categoryPlayed;
+      //let API1 = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + game.CreatorPath.target + '&prop=pageimages&format=json&pithumbsize=800';
+    fetch(uri)
       .then(response => response.json())
       .then(data => {
-        var pgid = Object.keys(data.query.pages)[0];
-        if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+        //var pgid = Object.keys(data.query.pages)[0];
+        if (typeof data.NodeImageURL !== "") {
           let article = {
             url: true,
             title: game.CreatorPath.target,
-            image: data.query.pages[pgid].thumbnail.source
+            image: data.NodeImageURL
           }
           this.setState({
             creatorTarget: article,
@@ -613,36 +713,103 @@ export default class GameBoard extends React.Component {
           })
         }
       })
+    }
+    else{
+      let API1 = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + game.CreatorPath.target + '&prop=pageimages&format=json&pithumbsize=800';
+      fetch(API1)
+        .then(response => response.json())
+        .then(data => {
+          var pgid = Object.keys(data.query.pages)[0];
+          if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+            let article = {
+              url: true,
+              title: game.CreatorPath.target,
+              image: data.query.pages[pgid].thumbnail.source
+            }
+            this.setState({
+              creatorTarget: article,
+              joinerCurrentNode: article
+            })
+          }
+          else {
+            let article = {
+              url: false,
+              title: game.CreatorPath.target,
+              image: categoryImage,
+            }
+            this.setState({
+              creatorTarget: article,
+              joinerCurrentNode: article
+            })
+          }
+        })
+    }
+    
     //fetch joiner target 
-    let API2 = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + game.JoinerPath.target + '&prop=pageimages&format=json&pithumbsize=800';
-    fetch(API2)
-      .then(response => response.json())
-      .then(data => {
-        var pgid = Object.keys(data.query.pages)[0];
-        if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
-          let article = {
-            url: true,
-            title: game.JoinerPath.target,
-            image: data.query.pages[pgid].thumbnail.source
+    if(!SIXcategories.includes(categoryPlayed)){
+      let uri2 = 'http://proj.ruppin.ac.il/igroup8/prod/api/VertexGetInfo/?nodeName=' + game.CreatorPath.target + '&categoryNAME=' + categoryPlayed;
+      //let API2 = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + game.JoinerPath.target + '&prop=pageimages&format=json&pithumbsize=800';
+      fetch(uri2)
+        .then(response => response.json())
+        .then(data => {
+          //var pgid = Object.keys(data.query.pages)[0];
+          if (typeof data.NodeImageURL !== "") {
+            let article = {
+              url: true,
+              title: game.JoinerPath.target,
+              image: data.NodeImageURL
+            }
+            this.setState({
+              joinerTarget: article,
+              creatorCurrentNode: article
+            })
           }
-          this.setState({
-            joinerTarget: article,
-            creatorCurrentNode: article
-          })
-        }
-        else {
-          let article = {
-            url: false,
-            title: game.JoinerPath.target,
-            image: categoryImage,
+          else {
+            let article = {
+              url: false,
+              title: game.JoinerPath.target,
+              image: categoryImage,
+            }
+            this.setState({
+              joinerTarget: article,
+              creatorCurrentNode: article
+            })
           }
-          this.setState({
-            joinerTarget: article,
-            creatorCurrentNode: article
-          })
-        }
-      })
+        })
+    }
+    else{
+      let API2 = 'https://en.wikipedia.org/w/api.php?action=query&titles=' + game.JoinerPath.target + '&prop=pageimages&format=json&pithumbsize=800';
+      fetch(API2)
+        .then(response => response.json())
+        .then(data => {
+          var pgid = Object.keys(data.query.pages)[0];
+          if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+            let article = {
+              url: true,
+              title: game.JoinerPath.target,
+              image: data.query.pages[pgid].thumbnail.source
+            }
+            this.setState({
+              joinerTarget: article,
+              creatorCurrentNode: article
+            })
+          }
+          else {
+            let article = {
+              url: false,
+              title: game.JoinerPath.target,
+              image: categoryImage,
+            }
+            this.setState({
+              joinerTarget: article,
+              creatorCurrentNode: article
+            })
+          }
+        })
+    }
+   
   }
+  
   changeTurn = () => {
     //check if we have a winner first
     //if we don't than update game state
@@ -661,6 +828,7 @@ export default class GameBoard extends React.Component {
     });
   }
   TimerExpired = () => {
+    console.log('time expired')
     if (this.state.isCreatorTurn) {
       const ref = firebase.database().ref("/theMole" + categoryPlayed);
       const gameRef = ref.child(currentGamekey);
@@ -676,7 +844,9 @@ export default class GameBoard extends React.Component {
     console.log('inside getArticleInfo')
     console.log('article ', article);
     console.log(categoryPlayed)
-    if (categoryPlayed !== 'NBA' && categoryPlayed !== 'Movies' && categoryPlayed !== 'Celeb' && categoryPlayed !== 'General' && categoryPlayed !== 'Music' && categoryPlayed !== 'Politicians') {
+    if(!SIXcategories.includes(categoryPlayed)){
+      console.log(SIXcategories);
+      console.log(categoryPlayed)
       let uri = 'http://proj.ruppin.ac.il/igroup8/prod/api/VertexGetInfo/?nodeName=' + article.title + '&categoryNAME=' + categoryPlayed;
       console.log(uri);
       fetch(uri)
@@ -770,15 +940,17 @@ export default class GameBoard extends React.Component {
   getDataOnTarget = (title) => {
     InfoTitle = title;
     console.log('title', title)
-    if (categoryPlayed !== 'NBA' && categoryPlayed !== 'Movies' && categoryPlayed !== 'Celeb' && categoryPlayed !== 'General' && categoryPlayed !== 'Music' && categoryPlayed !== 'Politicians') {
+    if(!SIXcategories.includes(categoryPlayed)){
       let uri = 'http://proj.ruppin.ac.il/igroup8/prod/api/VertexGetInfo/?nodeName=' + InfoTitle + '&categoryNAME=' + categoryPlayed;
       fetch(uri)
         .then(response => response.json())
         .then(data => {
           console.log('data' , data)
+          let desStr = data.NodeDescription.replace(/,/g, '\n\n');
+          console.log(desStr)
         Alert.alert(
           InfoTitle,
-          data.NodeDescription,
+          desStr,
           [
             {
               text: "OK",

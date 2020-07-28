@@ -23,7 +23,7 @@ export default class NotificationPopupToShow extends React.Component{
 
   render() {
     return (
-      <View style={{zIndex:40}}>
+      <View style={{zIndex:140}}>
         <NotificationPopup ref={ref => this.popup = ref} />
       </View>
     );

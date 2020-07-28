@@ -34,22 +34,22 @@ export default class Categories extends Component{
         ),
       }
     }
-    static navigationOptions = ({ navigation }) =>{         //   מפה היה על  note
-        return{
-        headerTitle:"Choose a category",
-        headerBackground: (
-          <NetworkHeader/>
-        ),
-        headerTitleStyle: { color: '#4D5F66',fontSize:20,justifyContent: 'center' },
-        headerLeft: 
-         ( <Button
-            onPress={()=>navigation.navigate('ChooseAGame')}
-            style={{backgroundColor:"transparent",elevation:0}}>
-              <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
-          </Button>
-         ),
-        }
-      }                                                     //  עד פה היה על note
+    // static navigationOptions = ({ navigation }) =>{         //   מפה היה על  note
+    //     return{
+    //     headerTitle:"Choose a category",
+    //     headerBackground: (
+    //       <NetworkHeader/>
+    //     ),
+    //     headerTitleStyle: { color: '#4D5F66',fontSize:20,justifyContent: 'center' },
+    //     headerLeft: 
+    //      ( <Button
+    //         onPress={()=>navigation.navigate('ChooseAGame')}
+    //         style={{backgroundColor:"transparent",elevation:0}}>
+    //           <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
+    //       </Button>
+    //      ),
+    //     }
+    //   }                                                     //  עד פה היה על note
       state = {
         showPop:false,
         category:'',
